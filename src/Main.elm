@@ -14,7 +14,6 @@ type Message
     | SetLatitude String
     | SetLongitude String
     | AddLocation
-    | ChangeLocation Int Location
     | RemoveLocation Int
     | Calculate
 
@@ -54,15 +53,6 @@ removeLocation id route =
             else x :: removeLocation id xs
         [] -> []
 
-changeLocation : Int -> Location -> Route -> Route
-changeLocation id loc route =
-    case route of
-        x :: xs ->
-            if x.id == id
-            then loc :: xs
-            else x :: changeLocation id loc xs
-        [] -> []
-
 update : Message -> Model -> Model
 update message model =
     let maybeLocation =
@@ -79,8 +69,6 @@ update message model =
                     }
                 Nothing ->
                     { model | status = "Error, Can't add an invalid location!" }
-          ChangeLocation id loc ->
-            { model | route = changeLocation id loc model.route }
           RemoveLocation id ->
             { model | route =  removeLocation id model.route }
           SetName name ->
@@ -111,7 +99,8 @@ view : Model -> Html Message
 view model =
     layout [ paddingXY 10 10 ] <|
         column [ spacing 10 ]
-            [ row [ ]
+            [ text model.status
+            , row [ ]
                 [ table [ spacing 20, paddingXY 10 5 ]
                     { data = model.route
                     , columns =
