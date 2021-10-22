@@ -80,10 +80,6 @@ twoOpt route =
         result = outerTwoOpt init
     in result.route
 
-showRoute : Route -> String
-showRoute =
-    String.concat << List.intersperse " -> " << List.map .name 
-
 location : Int -> String -> Float -> Float -> Location
 location id name latitude longitude =
     { id = id
