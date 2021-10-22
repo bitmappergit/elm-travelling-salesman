@@ -5240,19 +5240,6 @@ var $elm$core$Maybe$andThen = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $author$project$Main$changeLocation = F3(
-	function (id, loc, route) {
-		if (route.b) {
-			var x = route.a;
-			var xs = route.b;
-			return _Utils_eq(x.id, id) ? A2($elm$core$List$cons, loc, xs) : A2(
-				$elm$core$List$cons,
-				x,
-				A3($author$project$Main$changeLocation, id, loc, xs));
-		} else {
-			return _List_Nil;
-		}
-	});
 var $author$project$Map$location = F4(
 	function (id, name, latitude, longitude) {
 		return {id: id, latitude: latitude, longitude: longitude, name: name};
@@ -5562,11 +5549,22 @@ var $author$project$Map$outerTwoOpt = function (state) {
 			{k: state.i + 1})) : state;
 };
 var $author$project$Map$twoOpt = function (route) {
+	var initialRoute = function () {
+		if (route.b) {
+			var x = route.a;
+			return _Utils_ap(
+				route,
+				_List_fromArray(
+					[x]));
+		} else {
+			return _List_Nil;
+		}
+	}();
 	var init = {
-		distance: $author$project$Map$routeDistance(route),
+		distance: $author$project$Map$routeDistance(initialRoute),
 		i: 1,
 		k: 0,
-		route: route,
+		route: initialRoute,
 		swapped: true
 	};
 	var result = $author$project$Map$outerTwoOpt(init);
@@ -5602,14 +5600,6 @@ var $author$project$Main$update = F2(
 						model,
 						{status: 'Error, Can\'t add an invalid location!'});
 				}
-			case 'ChangeLocation':
-				var id = message.a;
-				var loc = message.b;
-				return _Utils_update(
-					model,
-					{
-						route: A3($author$project$Main$changeLocation, id, loc, model.route)
-					});
 			case 'RemoveLocation':
 				var id = message.a;
 				return _Utils_update(
@@ -13059,6 +13049,7 @@ var $author$project$Main$view = function (model) {
 				]),
 			_List_fromArray(
 				[
+					$mdgriffith$elm_ui$Element$text(model.status),
 					A2(
 					$mdgriffith$elm_ui$Element$row,
 					_List_Nil,
