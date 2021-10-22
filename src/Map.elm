@@ -71,10 +71,14 @@ twoOpt route =
             if state.swapped
             then helper <| outerTwoOpt { state | swapped = False }
             else state
+        initialRoute =
+            case route of
+                x :: _ -> route ++ [x]
+                [] -> []
         init = { i = 1
                , k = 0
-               , distance = routeDistance route
-               , route = route
+               , distance = routeDistance initialRoute
+               , route = initialRoute
                , swapped = True
                }
         result = outerTwoOpt init
